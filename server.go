@@ -17,9 +17,7 @@ var contentTypes = map[string]bool{
                             "text/html": true,}
 var regex = regexp.MustCompile(".*/")
 
-
-func main() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+func handleAll(w http.ResponseWriter, r *http.Request) {
         contentType := r.Header.Get("Content-Type")
         if !contentTypes[contentType] {
             http.Error(w, "Unsupported content type", http.StatusNotAcceptable)
@@ -39,6 +37,9 @@ func main() {
         if _, err := io.Copy(w, b); err != nil {
              log.Fatal(err)
         }
-    })
+}
+
+func main() {
+    http.HandleFunc("/", handleAll)
     http.ListenAndServe(":8080", nil)
 }
